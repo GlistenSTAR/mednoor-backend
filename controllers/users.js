@@ -2,14 +2,16 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const User = require('../models/user');
+const User = require('../models').User;
 
 const validateRegisterInput = require('../validation/register');
+const validateLoginInput = require('../validation/login');
+const isEmpty = require('../validation/is-empty');
 
 exports.loadUser = async (req, res) => {
   // console.log(req.user);
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findByPk(req.user.id);
     res.json(user);
   } catch (err) {
     console.error(err.message);
@@ -25,25 +27,25 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ where: { email: req.body.email } });
 
-    if (user) {
+    if (!isEmpty(user)) {
       errors.email = "This email already exists";
       return res.status(400).json(errors);
     }
 
-    const newUser = new User({
+    const newUser = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password
-    });
+    };
 
     const salt = await bcrypt.genSalt(10);
 
     newUser.password = await bcrypt.hash(req.body.password, salt);
 
-    await newUser.save();
+    await User.create(newUser);
 
     res.json({ msg: "Successfully registered" });
   } catch (error) {
@@ -60,17 +62,17 @@ exports.signin = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ where: { email: req.body.email } });
 
-    if (!user) {
-      errors.email = "Este correo electrónico no está registrado";
+    if (isEmpty(user)) {
+      errors.email = "This email not registered";
       return res.status(400).json(errors);
     }
-
+    // console.log(user.password)
     const isMatch = await bcrypt.compare(req.body.password, user.password);
 
     if (!isMatch) {
-      errors.password = "Contraseña incorrecta";
+      errors.password = "Invalid password";
       return res.status(400).json(errors);
     }
 
