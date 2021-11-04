@@ -11,4 +11,8 @@ router.post('/signup', usersController.signup);
 
 router.post('/signin', usersController.signin);
 
+router.put('/update/user', isAuth, usersController.updateUserData);
+
+router.put('/changePw', isAuth, usersController.changePassword);
+
 module.exports = router;

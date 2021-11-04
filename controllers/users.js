@@ -6,6 +6,8 @@ const User = require('../models').User;
 
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
+const validateUpdateInput = require('../validation/updateUser');
+const validateChangePwInput = require('../validation/changePw');
 const isEmpty = require('../validation/is-empty');
 
 exports.loadUser = async (req, res) => {
@@ -97,6 +99,62 @@ exports.signin = async (req, res) => {
   }
 }
 
-exports.updateUserData = async userData => {
+exports.updateUserData = async (req, res) => {
+  const { errors, isValid } = validateUpdateInput(req.body);
 
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  try {
+    await User.update({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+    }, {
+      where: {
+        id: req.user.id
+      }
+    });
+
+    res.json({ msg: "Successfully updated!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+}
+
+exports.changePassword = async (req, res) => {
+  const { errors, isValid } = validateChangePwInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  try {
+    const user = await User.findByPk(req.user.id);
+
+    const isMatch = await bcrypt.compare(req.body.oldPw, user.password);
+
+    if (!isMatch) {
+      errors.oldPw = "Current password incorrect";
+      return res.status(400).json(errors);
+    }
+
+    const salt = await bcrypt.genSalt(10);
+
+    const newPw = await bcrypt.hash(req.body.password, salt);
+
+    await User.update({
+      password: newPw
+    }, {
+      where: {
+        id: req.user.id
+      }
+    });
+
+    res.json({ msg: "Password successfully updated" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 }
