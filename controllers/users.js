@@ -47,7 +47,7 @@ exports.signup = async (req, res) => {
 
     await User.create(newUser);
 
-    res.json({ msg: "Successfully registered" });
+    res.status(200).json({ msg: "Successfully registered" });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

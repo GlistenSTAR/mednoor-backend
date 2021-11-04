@@ -8,7 +8,9 @@
     "server": "nodemon -r dotenv/config index.js",
     "db:create": "sequelize-cli db:create",
     "db:migrate": "sequelize-cli db:migrate",
-    "db:g:migration": "sequelize-cli migration:generate --name"
+    "db:g:migration": "sequelize-cli migration:generate --name",
+    "frontend": "npm run dev --prefix ../frontend",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\""
   },
   "author": "Night Fury",
   "license": "MIT",
