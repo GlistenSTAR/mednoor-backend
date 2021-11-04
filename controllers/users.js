@@ -96,3 +96,7 @@ exports.signin = async (req, res) => {
     res.status(500).json(error);
   }
 }
+
+exports.updateUserData = async userData => {
+
+}
