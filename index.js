@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const model = require('./models');
 
 const usersRoute = require('./routes/users');
+const tempRoute = require('./routes/templates');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/users', usersRoute);
+app.use('/api/temps', tempRoute);
 
 const port = parseInt(process.env.PORT, 10) || 7000;
 // const client = new pg.Client(PostgresURI);

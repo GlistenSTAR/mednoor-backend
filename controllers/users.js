@@ -14,7 +14,7 @@ exports.loadUser = async (req, res) => {
   // console.log(req.user);
   try {
     const user = await User.findByPk(req.user.id);
-    res.json(user);
+    res.json({ user, msg: 'success' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -49,7 +49,7 @@ exports.signup = async (req, res) => {
 
     await User.create(newUser);
 
-    res.json({ msg: "Successfully registered" });
+    res.json({ msg: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -90,7 +90,7 @@ exports.signin = async (req, res) => {
       { expiresIn: '1 days' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token: token });
+        res.json({ token: token, msg: 'success' });
       }
     );
   } catch (error) {
@@ -116,7 +116,7 @@ exports.updateUserData = async (req, res) => {
       }
     });
 
-    res.json({ msg: "Successfully updated!" });
+    res.json({ msg: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -152,7 +152,7 @@ exports.changePassword = async (req, res) => {
       }
     });
 
-    res.json({ msg: "Password successfully updated" });
+    res.json({ msg: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
