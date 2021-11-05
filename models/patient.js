@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Patient.hasMany(models.PatientState, {
+        foreignKey: 'patientId',
+        as: 'PatientStates'
+      });
       Patient.hasMany(models.Description, {
         foreignKey: 'patientId',
         as: 'Descriptions'
       });
-      Patient.hasMany(models.PatientState, {
-        foreignKey: 'patientId',
-        as: 'PatientStates'
-      })
     }
   };
   Patient.init({

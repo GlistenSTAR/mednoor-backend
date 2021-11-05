@@ -11,4 +11,8 @@ router.post('/printTemp', isAuth, templateController.printTemplate);
 
 router.post('/searchTemp', isAuth, templateController.searchTemplate);
 
+router.delete('/deleteTemp/:tempId', isAuth, templateController.deleteTemplate);
+
+router.put('/updateTemp/:tempId', isAuth, templateController.updateTemplate);
+
 module.exports = router;
