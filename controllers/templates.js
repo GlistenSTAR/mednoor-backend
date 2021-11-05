@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const Patient = require('../models').Patient;
 const PatientState = require('../models').PatientState;
 const Description = require('../models').Description;
@@ -5,6 +7,8 @@ const Description = require('../models').Description;
 const validatePatientInput = require('../validation/patient');
 const validatePrintDataInput = require('../validation/printTemp');
 // const validateSearchKeyInput = require('../validation/searchTemp');
+
+const createPDF = require('../libs/createPDF');
 
 const isEmpty = require('../validation/is-empty');
 
@@ -325,45 +329,17 @@ exports.deleteTemplate = async (req, res) => {
 
 // Print template to PDF
 exports.printTemplate = async (req, res) => {
-  const patient = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    tempName: req.body.tempName
-  };
-
-  const history = {
-    allergies: req.body.history.allergies,
-    currentMeds: req.body.history.currentMeds,
-    medicalHistory: req.body.history.medicalHistory,
-    socialHistory: req.body.history.socialHistory,
-    familyHistory: req.body.history.familyHistory
-  }
-
-  const state = {
-    bp: req.body.state.bp,
-    pulse: req.body.state.pulse,
-    respRate: req.body.state.respRate,
-    temp: req.body.state.temp,
-    height: req.body.state.height,
-    weight: req.body.state.weight,
-    bmi: req.body.state.bmi,
-    date: req.body.date
-  };
-
-  const description = {
-    chiefComplaint: req.body.description.chiefComplaint,
-    hpi: req.body.description.hpi,
-    subject: req.body.description.subject,
-    objective: req.body.description.objective,
-    assessment: req.body.description.assessment,
-    plan: req.body.description.plan,
-    date: req.body.date
-  }
-
-  const { errors, isValid } = validatePrintDataInput(patient);
+  const { errors, isValid } = validatePrintDataInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
+  try {
+    const path = await createPDF(req.body);
+    res.json({ msg: 'success', path: path });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 }

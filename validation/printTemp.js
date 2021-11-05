@@ -16,10 +16,6 @@ module.exports = function validatePrintDataInput(data) {
     errors.lastName = 'Lastname field required';
   }
 
-  if (Validator.isEmpty(data.tempName)) {
-    errors.tempName = 'Please enter template name';
-  }
-
   return {
     errors,
     isValid: isEmpty(errors)

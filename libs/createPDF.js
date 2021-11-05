@@ -1,24 +1,27 @@
-import pdf from 'pdf-creator-node';
-import fs from 'fs-extra';
+const pdf = require('pdf-creator-node');
+const fs = require('fs-extra');
 
-export default async function createPDF(order) {
+const createPDF = async (template) => {
   try {
-    let html = fs.readFileSync("src/libs/index.html", "utf-8");
-
-    let values = Object.assign({}, order._doc);
-
-    let document = {
-      html,
-      data: {
-        values
-      },
-      path: `uploads/doc/${order._id}.pdf`
-    };
+    let html = fs.readFileSync("libs/template.html", "utf-8");
+    const filename = new Date().toDateString() + '-' + Math.random() + '-' + template.firstName + template.lastName;
 
     let options = {
-      format: "A3",
+      format: "A4",
       orientation: "portrait",
-      border: "10mm"
+      border: "15mm",
+      header: {
+        height: '10mm'
+      }
+    };
+
+    let document = {
+      html: html,
+      data: {
+        temp: template,
+      },
+      path: `files/${filename}.pdf`,
+      type: "",
     };
 
     await pdf.create(document, options);
@@ -27,3 +30,5 @@ export default async function createPDF(order) {
     return error;
   }
 }
+
+module.exports = createPDF;
