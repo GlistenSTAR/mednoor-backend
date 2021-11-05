@@ -1,12 +1,12 @@
 const Validator = require('validator');
 const isEmpty = require('./is-empty');
 
-module.exports = function validateUpdateInput(data) {
+module.exports = function validatePrintDataInput(data) {
   let errors = {};
 
   data.firstName = !isEmpty(data.firstName) ? data.firstName : '';
   data.lastName = !isEmpty(data.lastName) ? data.lastName : '';
-  data.email = !isEmpty(data.email) ? data.email : '';
+  data.tempName = !isEmpty(data.tempName) ? data.tempName : '';
 
   if (Validator.isEmpty(data.firstName)) {
     errors.firstName = 'Firstname field required';
@@ -16,10 +16,8 @@ module.exports = function validateUpdateInput(data) {
     errors.lastName = 'Lastname field required';
   }
 
-  if (Validator.isEmpty(data.email)) {
-    errors.email = 'Email field required';
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = 'Invalid Email';
+  if (Validator.isEmpty(data.tempName)) {
+    errors.tempName = 'Please enter template name';
   }
 
   return {

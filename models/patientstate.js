@@ -33,25 +33,3 @@ module.exports = (sequelize, DataTypes) => {
   });
   return PatientState;
 };
-
-// module.exports = (sequelize, DataTypes) => {
-//   const PatientState = sequelize.define('PatientState', {
-//     bp: DataTypes.FLOAT,
-//     pulse: DataTypes.FLOAT,
-//     respRate: DataTypes.FLOAT,
-//     temp: DataTypes.FLOAT,
-//     height: DataTypes.FLOAT,
-//     weight: DataTypes.FLOAT,
-//     bmi: DataTypes.FLOAT,
-//     date: DataTypes.STRING
-//   }, {});
-
-//   PatientState.associate = function (models) {
-//     PatientState.belongsTo(models.Patient, {
-//       foreignKey: 'patientId',
-//       onDelete: 'CASCADE'
-//     });
-//   }
-
-//   return PatientState;
-// }

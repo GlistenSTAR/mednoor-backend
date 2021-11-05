@@ -11,11 +11,11 @@ module.exports = function validateRegisterInput(data) {
   data.password2 = !isEmpty(data.password2) ? data.password2 : '';
 
   if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = 'FirstName field required';
+    errors.firstName = 'Firstname field required';
   }
 
   if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = 'LastName field required';
+    errors.lastName = 'Lastname field required';
   }
 
   if (Validator.isEmpty(data.email)) {
