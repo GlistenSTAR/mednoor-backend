@@ -16,14 +16,12 @@ exports.saveTemplate = async (req, res) => {
   const patient = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    date: req.body.date,
     allergies: req.body.history.allergies,
     currentMeds: req.body.history.currentMeds,
     medicalHistory: req.body.history.medicalHistory,
     socialHistory: req.body.history.socialHistory,
-    familyHistory: req.body.history.familyHistory
-  };
-
-  const state = {
+    familyHistory: req.body.history.familyHistory,
     bp: req.body.state.bp,
     pulse: req.body.state.pulse,
     respRate: req.body.state.respRate,
@@ -31,18 +29,13 @@ exports.saveTemplate = async (req, res) => {
     height: req.body.state.height,
     weight: req.body.state.weight,
     bmi: req.body.state.bmi,
-    date: req.body.date
-  };
-
-  const description = {
     chiefComplaint: req.body.description.chiefComplaint,
     hpi: req.body.description.hpi,
     subject: req.body.description.subject,
     objective: req.body.description.objective,
     assessment: req.body.description.assessment,
-    plan: req.body.description.plan,
-    date: req.body.date
-  }
+    plan: req.body.description.plan
+  };
 
   const { errors, isValid } = validatePatientInput(patient);
 
@@ -51,22 +44,7 @@ exports.saveTemplate = async (req, res) => {
   }
 
   try {
-    await Patient.create({
-      ...patient,
-      PatientStates: state,
-      Descriptions: description
-    }, {
-      include: [
-        {
-          model: PatientState,
-          as: 'PatientStates'
-        },
-        {
-          model: Description,
-          as: 'Descriptions'
-        }
-      ]
-    });
+    await Patient.create(patient);
 
     res.json({ msg: 'success' });
   } catch (error) {
@@ -80,14 +58,12 @@ exports.updateTemplate = async (req, res) => {
   const patient = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    date: req.body.date,
     allergies: req.body.history.allergies,
     currentMeds: req.body.history.currentMeds,
     medicalHistory: req.body.history.medicalHistory,
     socialHistory: req.body.history.socialHistory,
-    familyHistory: req.body.history.familyHistory
-  };
-
-  const state = {
+    familyHistory: req.body.history.familyHistory,
     bp: req.body.state.bp,
     pulse: req.body.state.pulse,
     respRate: req.body.state.respRate,
@@ -95,18 +71,13 @@ exports.updateTemplate = async (req, res) => {
     height: req.body.state.height,
     weight: req.body.state.weight,
     bmi: req.body.state.bmi,
-    date: req.body.date
-  };
-
-  const description = {
     chiefComplaint: req.body.description.chiefComplaint,
     hpi: req.body.description.hpi,
     subject: req.body.description.subject,
     objective: req.body.description.objective,
     assessment: req.body.description.assessment,
-    plan: req.body.description.plan,
-    date: req.body.date
-  }
+    plan: req.body.description.plan
+  };
 
   const { errors, isValid } = validatePatientInput(patient);
 
@@ -116,19 +87,7 @@ exports.updateTemplate = async (req, res) => {
 
   try {
     await Patient.update({
-      ...patient,
-      PatientStates: state,
-      Descriptions: description,
-      include: [
-        {
-          model: PatientState,
-          as: 'PatientStates'
-        },
-        {
-          model: Description,
-          as: 'Descriptions'
-        }
-      ]
+      ...patient
     }, {
       where: {
         id: req.params.tempId
@@ -159,149 +118,51 @@ exports.searchTemplate = async (req, res) => {
       searchResults = await Patient.findAll({
         where: {
           firstName: firstName,
-          lastName: lastName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-            where: {
-              date: date
-            }
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-            where: {
-              date: date
-            }
-          }
-        ]
+          lastName: lastName,
+          date: date
+        }
       });
     } else if (isEmpty(firstName) && !isEmpty(lastName) && !isEmpty(date)) {
       searchResults = await Patient.findAll({
         where: {
-          lastName: lastName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-            where: {
-              date: date
-            }
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-            where: {
-              date: date
-            }
-          }
-        ]
+          lastName: lastName,
+          date: date
+        }
       });
     } else if (!isEmpty(firstName) && isEmpty(lastName) && !isEmpty(date)) {
       searchResults = await Patient.findAll({
         where: {
-          firstName: firstName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-            where: {
-              date: date
-            }
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-            where: {
-              date: date
-            }
-          }
-        ]
+          firstName: firstName,
+          date: date
+        }
       });
     } else if (!isEmpty(firstName) && !isEmpty(lastName) && isEmpty(date)) {
       searchResults = await Patient.findAll({
         where: {
-          firstName: firstName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-          }
-        ]
+          firstName: firstName,
+          lastName: lastName
+        }
       });
     } else if (!isEmpty(firstName) && isEmpty(lastName) && isEmpty(date)) {
       searchResults = await Patient.findAll({
         where: {
           firstName: firstName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-          }
-        ]
+        }
       });
     } else if (isEmpty(firstName) && !isEmpty(lastName) && isEmpty(date)) {
       searchResults = await Patient.findAll({
         where: {
           lastName: lastName
-        },
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-          }
-        ]
+        }
       });
     } else if (isEmpty(firstName) && isEmpty(lastName) && !isEmpty(date)) {
       searchResults = await Patient.findAll({
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates',
-            where: {
-              date: date
-            }
-          },
-          {
-            model: Description,
-            as: 'Descriptions',
-            where: {
-              date: date
-            }
-          }
-        ]
+        where: {
+          date: date
+        }
       });
     } else if (isEmpty(firstName) && isEmpty(lastName) && isEmpty(date)) {
-      searchResults = await Patient.findAll({
-        include: [
-          {
-            model: PatientState,
-            as: 'PatientStates'
-          },
-          {
-            model: Description,
-            as: 'Descriptions'
-          }
-        ]
-      });
+      searchResults = await Patient.findAll();
     }
 
     res.json({ searchResults, msg: 'success' })
@@ -314,9 +175,6 @@ exports.searchTemplate = async (req, res) => {
 // Delete template
 exports.deleteTemplate = async (req, res) => {
   try {
-    await PatientState.destroy({
-      where: { patientId: req.params.tempId }
-    });
     await Patient.destroy({
       where: { id: req.params.tempId }
     });

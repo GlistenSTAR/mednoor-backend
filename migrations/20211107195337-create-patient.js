@@ -14,6 +14,9 @@ module.exports = {
       lastName: {
         type: Sequelize.STRING
       },
+      date: {
+        type: Sequelize.STRING
+      },
       allergies: {
         type: Sequelize.STRING
       },
@@ -27,6 +30,45 @@ module.exports = {
         type: Sequelize.STRING
       },
       familyHistory: {
+        type: Sequelize.STRING
+      },
+      bp: {
+        type: Sequelize.FLOAT
+      },
+      pulse: {
+        type: Sequelize.FLOAT
+      },
+      respRate: {
+        type: Sequelize.FLOAT
+      },
+      temp: {
+        type: Sequelize.FLOAT
+      },
+      height: {
+        type: Sequelize.FLOAT
+      },
+      weight: {
+        type: Sequelize.FLOAT
+      },
+      bmi: {
+        type: Sequelize.FLOAT
+      },
+      chiefComplaint: {
+        type: Sequelize.STRING
+      },
+      hpi: {
+        type: Sequelize.STRING
+      },
+      subject: {
+        type: Sequelize.STRING
+      },
+      objective: {
+        type: Sequelize.STRING
+      },
+      assessment: {
+        type: Sequelize.STRING
+      },
+      plan: {
         type: Sequelize.STRING
       },
       createdAt: {
