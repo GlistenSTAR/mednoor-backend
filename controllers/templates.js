@@ -74,7 +74,8 @@ exports.saveTemplate = async (req, res) => {
 
 // Update template
 exports.updateTemplate = async (req, res) => {
-  const patient = {
+  const patientData = {
+    userId: req.user.id,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     date: req.body.date,
@@ -98,20 +99,26 @@ exports.updateTemplate = async (req, res) => {
     plan: req.body.description.plan
   };
 
-  const { errors, isValid } = validatePatientInput(patient);
+  const { errors, isValid } = validatePatientInput(patientData);
 
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
   try {
-    await Patient.update({
-      ...patient
-    }, {
+    const patient = await Patient.findOne({
       where: {
-        id: req.params.tempId
+        firstName: patientData.firstName,
+        lastName: patientData.lastName,
+        date: patientData.date
       }
     });
+
+    if (isEmpty(patient)) {
+      await Patient.create(patientData);
+    } else {
+      await patient.update(patientData);
+    }
 
     res.json({ msg: 'success' });
   } catch (error) {
